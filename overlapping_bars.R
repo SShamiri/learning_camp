@@ -27,28 +27,60 @@ df %>%
   # ) 
 
 
-# overlapping bars
+# overlapping bars (slide bar)
 
 # data structure
+
 df2 <- data.frame(bg = c("bg", "bg"), 
-                 val1 =c(100, # measure scale form -100 to 100
-                         -100),
-                 val2 = c(54, # supply value
-                          0 # demand value
-                          )
-                 ) %>% 
+                  val1 =c(100, # measure scale form -100 to 100
+                          -100),
+                  val2 = c(54, # supply value
+                           0 # demand value
+                  )
+) %>% 
   pivot_longer(-bg, names_to = 'g', values_to = 'val')
 
 # plot
-df2 %>% 
+
+hc <- df2 %>% filter(val == 54) %>%  
   hchart(type ='bar', 
-         hcaes(x = bg, y = val, group = g),
-         grouping = FALSE,
-         pointWidth =  c(40,30), # controls the width of each group
-         showInLegend = FALSE,
-         borderWidth = 0,
-         #borderColor = c('red','black')
-  ) %>% 
-  hc_colors(colors = c('#bbb', 'rgb(0, 255, 0, 0.2)')) %>% 
+         hcaes(x = bg, y = val),
+         dataLabels = list(
+           enabled= T,
+           align = 'left',
+           format = '{y} %'
+         ) ,
+         pointWidth = 20,
+         color = "red"
+         
+  )  
+
+hc %>% 
+  hc_add_series(df2 %>% filter(val != 54), type ='bar', 
+                hcaes(x = bg, y = val, group = g),
+                grouping = FALSE,
+                pointWidth =  40, # controls the width of each group
+                showInLegend = FALSE,
+                borderWidth = 0,
+                dataLabels = list(
+                  enabled= T,
+                  inside = F,
+                  formatter = JS("function() { return Math.abs(this.y) + ' %'}")
+                ),
+                color = "rgb(0, 255, 0, 0.2)")  %>% 
   hc_xAxis( visible = FALSE ) %>% 
   hc_yAxis( visible = FALSE )
+
+
+##
+df2 %>% filter(val != 54) %>%  
+  hchart(type ='bar', 
+         hcaes(x = bg, y = val),
+         dataLabels = list(
+           enabled= T,
+           inside = F,
+           formatter = JS("function() { return Math.abs(this.y) + ' %'}")
+         ) ,
+         pointWidth = 20,
+         color = "rgb(0, 255, 0, 0.2)"
+  )  
