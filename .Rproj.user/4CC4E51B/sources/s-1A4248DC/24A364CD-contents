@@ -1,0 +1,63 @@
+library(tidyverse)
+library(highcharter)
+
+
+# overlapping bars by groups
+
+# data structure
+df <- data.frame(cat = c("bg1", "bg2"), 
+                 val1 =c(30, -25),
+                 val2 = c(20, -30)) %>% 
+  pivot_longer(-cat, names_to = 'g', values_to = 'val')
+
+# plot 
+df %>% 
+  hchart(type ='bar', 
+         hcaes(x = cat, y = val, group = g),
+         grouping = FALSE,
+         pointWidth =  c(60,30), # controls the width of each group
+         showInLegend = FALSE,
+         borderWidth = 0
+         ) %>% 
+  hc_colors(colors = c('rgb(255, 0, 0, 0.2)', 'rgb(0, 255, 0, 0.2)')) 
+ 
+# Note hc_plotOptions not for bar charts. series option are part of hchart
+ # hc_plotOptions(
+  #   borderWidth = 0
+  # ) 
+
+
+# overlapping bars
+
+# data structure
+df2 <- data.frame(bg = c("bg", "bg"), 
+                 val1 =c(100, # measure scale form -100 to 100
+                         -100),
+                 val2 = c(54, # supply value
+                          0 # demand value
+                          )
+                 ) %>% 
+  pivot_longer(-bg, names_to = 'g', values_to = 'val')
+
+# plot
+df2 %>% 
+  hchart(type ='bar', 
+         hcaes(x = bg, y = val, group = g),
+         grouping = FALSE,
+         pointWidth =  c(40,30), # controls the width of each group
+         showInLegend = FALSE,
+         borderWidth = 0,
+         #borderColor = c('red','black'),
+         dataLabels = list(
+           enabled = TRUE,
+           color = '#000',
+           # style = list(fontWeight= 'bolder'),
+          #formatter = "function() {return this.x + ': ' + this.y}",
+           inside = TRUE,
+          align = c('left', 'right', 'right')
+           #rotation: 270
+         )
+  ) %>% 
+  hc_colors(colors = c('#bbb', 'rgb(0, 255, 0, 0.2)')) %>% 
+  hc_xAxis( visible = FALSE ) %>% 
+  hc_yAxis( visible = FALSE )
