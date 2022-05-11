@@ -28,9 +28,6 @@ df %>%
 
 
 # overlapping bars (slide bar)
-
-# data structure
-
 df2 <- data.frame(bg = c("bg", "bg"), 
                   val1 =c(100, # measure scale form -100 to 100
                           -100),
@@ -47,7 +44,8 @@ hc <- df2 %>% filter(val == 54) %>%
          hcaes(x = bg, y = val),
          dataLabels = list(
            enabled= T,
-           align = 'left',
+           #align = 'left',
+           inside = T,
            format = '{y} %'
          ) ,
          pointWidth = 20,
@@ -55,8 +53,8 @@ hc <- df2 %>% filter(val == 54) %>%
          
   )  
 
-hc %>% 
-  hc_add_series(df2 %>% filter(val != 54), type ='bar', 
+hc3 <- hc %>% 
+  hc_add_series(df2 %>% filter(val != 54 & val != 0), type ='bar', 
                 hcaes(x = bg, y = val, group = g),
                 grouping = FALSE,
                 pointWidth =  40, # controls the width of each group
@@ -69,7 +67,9 @@ hc %>%
                 ),
                 color = "rgb(0, 255, 0, 0.2)")  %>% 
   hc_xAxis( visible = FALSE ) %>% 
-  hc_yAxis( visible = FALSE )
+  hc_yAxis( visible = FALSE ) %>% 
+  hc_size(height = 80) %>% 
+  hc_add_theme(hc_theme_sparkline_vb()) 
 
 
 ##
